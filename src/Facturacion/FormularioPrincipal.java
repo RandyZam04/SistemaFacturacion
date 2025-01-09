@@ -18,12 +18,14 @@ public class FormularioPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JDesktopPane desktopPane;
-
+    
+    
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     FormularioPrincipal frame = new FormularioPrincipal();
+                    
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -34,7 +36,7 @@ public class FormularioPrincipal extends JFrame {
 
     public FormularioPrincipal() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 891, 583);
+        setBounds(100, 100, 1000, 700);
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -44,11 +46,44 @@ public class FormularioPrincipal extends JFrame {
         menuArchivo.setBackground(new Color(255, 255, 255));
         menuBar.add(menuArchivo);
 
-        JMenuItem itemListaClientes = new JMenuItem("ListaClientes");
-        menuArchivo.add(itemListaClientes);
-
         JMenuItem itemSalir = new JMenuItem("Salir");
         menuArchivo.add(itemSalir);
+        
+        JMenu menuClientes = new JMenu("Clientes");
+        menuBar.add(menuClientes);
+        
+        JMenuItem itemListaClientes = new JMenuItem("Lista Clientes");
+        menuClientes.add(itemListaClientes);
+        
+        JMenu menuProductos = new JMenu("Productos");
+        menuBar.add(menuProductos);
+        
+        JMenuItem itemListaProductos = new JMenuItem("Lista Productos");
+        menuProductos.add(itemListaProductos);
+        
+        JMenu menuFacturas = new JMenu("Facturas");
+        menuBar.add(menuFacturas);
+        
+        JMenuItem itemListaFacturas = new JMenuItem("Lista Facturas");
+        menuFacturas.add(itemListaFacturas);
+        
+        itemListaClientes.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirVentana(new TablaDeClientes());
+            }
+        });
+
+        itemListaProductos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirVentana(new TablaDeProductos());
+            }
+        });
+        
+        itemListaFacturas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                abrirVentana(new ModuloFacturacion());
+            }
+        });
 
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -56,38 +91,35 @@ public class FormularioPrincipal extends JFrame {
         contentPane.setLayout(null);
 
         desktopPane = new JDesktopPane();
-        desktopPane.setBounds(0, 0, 877, 514);
+        desktopPane.setBounds(0, 0, 1013, 641);
         contentPane.add(desktopPane);
-
-        itemListaClientes.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                boolean ventanaAbierta = false;
-
-                for (JInternalFrame frame : desktopPane.getAllFrames()) {
-                    if (frame instanceof TablaDeClientes) {
-                        try {
-                            frame.setSelected(true);
-                            frame.toFront();
-                        } catch (java.beans.PropertyVetoException ex) {
-                            ex.printStackTrace();
-                        }
-                        ventanaAbierta = true;
-                        break;
-                    }
-                }
-
-                if (!ventanaAbierta) {
-                    TablaDeClientes tablaDeClientes = new TablaDeClientes();
-                    desktopPane.add(tablaDeClientes);
-                    tablaDeClientes.setVisible(true);
-                }
-            }
-        });
 
         itemSalir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
+    }
+
+    private void abrirVentana(JInternalFrame ventana) {
+        boolean ventanaAbierta = false;
+
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            if (ventana.getClass().isInstance(frame)) {
+                try {
+                    frame.setSelected(true);
+                    frame.toFront();
+                } catch (java.beans.PropertyVetoException ex) {
+                    ex.printStackTrace();
+                }
+                ventanaAbierta = true;
+                break;
+            }
+        }
+
+        if (!ventanaAbierta) {
+            desktopPane.add(ventana);
+            ventana.setVisible(true);
+        }
     }
 }
